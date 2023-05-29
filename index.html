@@ -543,6 +543,20 @@
                 });
         }
     </script>
+    <script>
+        // Function to animate progress bars
+        function animateProgressBars() {
+          var progressBars = document.querySelectorAll('.progress-bar');
+      
+          progressBars.forEach(function(progressBar) {
+            var valueNow = progressBar.getAttribute('aria-valuenow');
+            progressBar.style.width = valueNow + '%';
+          });
+        }
+      
+        // Animate progress bars when the page loads
+        animateProgressBars();
+      </script>
 </body>
 
 </html>
