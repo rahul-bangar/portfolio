@@ -218,7 +218,7 @@
                     <div class="row align-items-center">
                         <div class="col-md-6">
                             <div class="exp-col">
-                                <span>01-June-2023 <i>to</i> 31-july-2023</span>
+                                <span>June-2023 <i>to</i> Present</span>
                                 <h3>Accenture</h3>
                                 <h4>India</h4>
                                 <h5>Softwaare Engineer Analyst</h5>
@@ -293,8 +293,9 @@
                             <div class="portfolio-wrap">
                                 <figure>
                                     <img src="img/portfolio-1.jpg" class="img-fluid" alt="">
-                                    <a href="img/portfolio-1.jpg" data-lightbox="portfolio" data-title="Lorentz and Spi Factor"
-                                        class="link-preview" title="Preview"><i class="fa fa-eye"></i></a>
+                                    <a href="img/portfolio-1.jpg" data-lightbox="portfolio"
+                                        data-title="Lorentz and Spi Factor" class="link-preview" title="Preview"><i
+                                            class="fa fa-eye"></i></a>
                                     <a href="https://github.com/rahul-bangar/calculator.git" target="_blank"
                                         class="link-details" title="More Details"><i class="fa fa-link"></i></a>
                                     <a class="portfolio-title" href="#">Lorentz and Spi Factor Calculator <span>App
@@ -307,10 +308,11 @@
                             <div class="portfolio-wrap">
                                 <figure>
                                     <img src="img/portfolio-2.jpg" class="img-fluid" alt="">
-                                    <a href="img/portfolio-2.jpg" class="link-preview" data-lightbox="portfolio"
-                                        data-title="Project Name" title="Preview"><i class="fa fa-eye"></i></a>
-                                    <a href="https://github.com/rahul-bangar/Arithmetic-Calculator.git" target="_blank"
-                                        class="link-details" title="More Details"><i class="fa fa-link"></i></a>
+                                    <a href="https://rahul-bangar.github.io/calc/" class="link-preview" data-fancybox data-type="iframe" data-src="https://rahul-bangar.github.io/calc/" data-title="Project Name" title="Preview">
+                                        <i class="fa fa-eye"></i>
+                                      </a>
+                                    <a href="https://rahul-bangar.github.io/calc/" target="_blank" class="link-details"
+                                        title="More Details"><i class="fa fa-link"></i></a>
                                     <a class="portfolio-title" href="#">Arithmetic Calculator <span>Web
                                             Development</span></a>
                                 </figure>
@@ -334,10 +336,14 @@
                             <div class="portfolio-wrap">
                                 <figure>
                                     <img src="img/portfolio-4.jpg" class="img-fluid" alt="">
-                                    <a href="img/portfolio-4.jpg" class="link-preview" data-lightbox="portfolio"
-                                        data-title="Project Name" title="Preview"><i class="fa fa-eye"></i></a>
-                                    <a href="#" class="link-details" title="More Details"><i class="fa fa-link"></i></a>
-                                    <a class="portfolio-title" href="#">Project Name <span>Research</span></a>
+                                    <a href="ACCESS23_paper_9969.pdf" class="link-preview" data-fancybox data-type="iframe"
+                                        data-src="ACCESS23_paper_9969.pdf" data-title="Project Name" title="Preview">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <a href="https://github.com/rahul-bangar/mp-quad" class="link-details"
+                                        title="More Details"><i class="fa fa-link"></i></a>
+                                    <a class="portfolio-title" href="#">mpQUAD: Multipath Quad TCP Congestion
+                                        Control in FANETs <span>Research</span></a>
                                 </figure>
                             </div>
                         </div>
@@ -447,17 +453,20 @@
                                             <input type="text" class="form-control" placeholder="Your Name" id="name" />
                                         </div>
                                         <div class="form-group col-md-6">
-                                            <input type="email" class="form-control" placeholder="Your Email" id="email" />
+                                            <input type="email" class="form-control" placeholder="Your Email"
+                                                id="email" />
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <input type="text" class="form-control" placeholder="Subject" id="subject" />
                                     </div>
                                     <div class="form-group">
-                                        <textarea class="form-control" rows="5" placeholder="Message" id="message"></textarea>
+                                        <textarea class="form-control" rows="5" placeholder="Message"
+                                            id="message"></textarea>
                                     </div>
                                     <div class="form-group">
-                                        <button class="btn btn-primary btn-block" type="button" onclick="sendEmail()">Send Message</button>
+                                        <button class="btn btn-primary btn-block" type="button"
+                                            onclick="sendEmail()">Send Message</button>
                                     </div>
                                 </form>
                             </div>
@@ -497,34 +506,43 @@
     <script src="lib/isotope/isotope.pkgd.min.js"></script>
     <script src="lib/lightbox/js/lightbox.min.js"></script>
 
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- FancyBox CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+    <!-- FancyBox JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
     <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-<script>
-    (function(){
-        emailjs.init("Dd4OpVICouuf7Rz2C");
-    })();
+    <script>
+        (function () {
+            emailjs.init("Dd4OpVICouuf7Rz2C");
+        })();
 
-    function sendEmail() {
-        var templateParams = {
-            name: document.getElementById("name").value,
-            email: document.getElementById("email").value,
-            subject: document.getElementById("subject").value,
-            message: document.getElementById("message").value
-        };
+        function sendEmail() {
+            var templateParams = {
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value,
+                subject: document.getElementById("subject").value,
+                message: document.getElementById("message").value
+            };
 
-        emailjs.send("service_87g20z5", "template_5pfhil6", templateParams)
-            .then(function(response) {
-                console.log("Message sent successfully!", response.status, response.text);
-                location.reload(); 
-                alert("Meassage sent successfully!");
-                document.getElementById("myForm").reset(); // Reset the form after sending
-            }, function(error) {
-                console.error("Error sending Message:", error);
-                alert("An error occurred while sending the Message. Please try again later.");
-            });
-    }
-</script>
+            emailjs.send("service_87g20z5", "template_5pfhil6", templateParams)
+                .then(function (response) {
+                    console.log("Message sent successfully!", response.status, response.text);
+                    location.reload();
+                    alert("Meassage sent successfully!");
+                    document.getElementById("myForm").reset(); // Reset the form after sending
+                }, function (error) {
+                    console.error("Error sending Message:", error);
+                    alert("An error occurred while sending the Message. Please try again later.");
+                });
+        }
+    </script>
 </body>
 
 </html>
