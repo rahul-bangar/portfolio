@@ -27,7 +27,7 @@
     <div class="wrapper">
         <div class="sidebar">
             <div class="sidebar-header">
-                <img src="img/profile.jpg" alt="Image">
+                <img src="img/profile.jpeg" alt="Image">
             </div>
             <div class="sidebar-content">
                 <nav class="navbar navbar-expand-md bg-dark navbar-dark">
@@ -97,7 +97,7 @@
                     </div>
                     <div class="row align-items-center">
                         <div class="col-md-6 col-lg-5">
-                            <img src="img/about.jpg" alt="Image">
+                            <img src="img/profile.png" alt="Image">
                         </div>
                         <div class="col-md-6 col-lg-7">
                             <p>
@@ -516,6 +516,7 @@
         emailjs.send("service_87g20z5", "template_5pfhil6", templateParams)
             .then(function(response) {
                 console.log("Message sent successfully!", response.status, response.text);
+                location.reload(); 
                 alert("Meassage sent successfully!");
                 document.getElementById("myForm").reset(); // Reset the form after sending
             }, function(error) {
