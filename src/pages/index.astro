@@ -4,34 +4,21 @@ import Icon from '../components/Icon.astro';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
 import About from '../components/About.astro';
-import Experience from '../components/Experience.astro';
-import Education from '../components/Education.astro';
+import Resume from '../components/Resume.astro';
 import Work from '../components/Work.astro';
 import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
 ---
 
 <Base>
-  <!-- Animated aurora background -->
-  <div class="fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
-    <span
-      class="absolute top-[-10%] left-[-5%] w-[480px] h-[480px] rounded-full bg-accent/30 blur-[110px] animate-float will-change-transform"
-    ></span>
-    <span
-      class="absolute top-[30%] right-[-10%] w-[420px] h-[420px] rounded-full bg-accent2/25 blur-[110px] animate-float will-change-transform"
-      style="animation-delay: -7s;"
-    ></span>
-    <span
-      class="absolute bottom-[-15%] left-[20%] w-[520px] h-[520px] rounded-full bg-accent3/20 blur-[120px] animate-float will-change-transform"
-      style="animation-delay: -14s;"
-    ></span>
-  </div>
-
-  <!-- Hue overlay driven by cursor position -->
+  <!-- Static aurora background: painted once, zero per-frame cost. -->
   <div
-    id="hueShift"
-    class="fixed inset-0 -z-10 pointer-events-none opacity-0 transition-opacity duration-700 mix-blend-screen"
+    class="fixed inset-0 -z-10"
     aria-hidden="true"
+    style="background:
+      radial-gradient(42% 38% at 10% 6%, rgba(124,92,255,0.26), transparent 72%),
+      radial-gradient(40% 40% at 90% 32%, rgba(34,211,238,0.18), transparent 72%),
+      radial-gradient(46% 44% at 85% 96%, rgba(255,111,145,0.12), transparent 72%);"
   >
   </div>
 
@@ -47,8 +34,7 @@ import Footer from '../components/Footer.astro';
   <main>
     <Hero />
     <About />
-    <Experience />
-    <Education />
+    <Resume />
     <Work />
     <Contact />
   </main>
@@ -70,31 +56,51 @@ import Footer from '../components/Footer.astro';
       'use strict';
 
       document.addEventListener('DOMContentLoaded', function () {
-        /* ---- Navbar scrolled state + scroll progress (rAF-throttled) ---- */
         var nav = document.getElementById('nav');
         var progress = document.getElementById('scrollProgress');
         var backToTop = document.getElementById('backToTop');
         var sections = Array.prototype.slice.call(document.querySelectorAll('section[id]'));
         var navAnchors = Array.prototype.slice.call(document.querySelectorAll('#navLinks a, #navLinksMobile a'));
+        var navToggle = document.getElementById('navToggle');
+        var navLinksMobile = document.getElementById('navLinksMobile');
+        var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-        var sectionOffsets = [];
-        function cacheOffsets() {
-          sectionOffsets = sections.map(function (sec) {
-            return { id: sec.id, top: sec.getBoundingClientRect().top + window.scrollY };
-          });
-        }
+        /* ---------------------------------------------------------------
+           Active nav link — set directly; driven by IntersectionObserver
+           (no per-frame measurement). A pin holds the clicked link during a
+           programmatic scroll.
+        ---------------------------------------------------------------- */
+        var activeId = '';
+        var pinnedId = null;
 
-        var ticking = false;
-        function requestScroll() {
-          if (!ticking) {
-            ticking = true;
-            requestAnimationFrame(renderScroll);
+        function setActive(id) {
+          if (!id || id === activeId) return;
+          activeId = id;
+          for (var i = 0; i < navAnchors.length; i++) {
+            navAnchors[i].classList.toggle('active', navAnchors[i].getAttribute('href') === '#' + id);
           }
         }
-        function renderScroll() {
+
+        if ('IntersectionObserver' in window && sections.length) {
+          var navH0 = nav ? nav.offsetHeight : 0;
+          var spy = new IntersectionObserver(
+            function (entries) {
+              if (pinnedId) return;
+              for (var e = 0; e < entries.length; e++) {
+                if (entries[e].isIntersecting) setActive(entries[e].target.id);
+              }
+            },
+            { rootMargin: '-' + (navH0 + 10) + 'px 0px -70% 0px', threshold: 0 }
+          );
+          sections.forEach(function (s) { spy.observe(s); });
+        }
+
+        /* ---- Lightweight scroll handler: nav bg, progress, back-to-top ---- */
+        var ticking = false;
+        function onScroll() {
           ticking = false;
           var y = window.scrollY || document.documentElement.scrollTop;
-
           if (nav) nav.classList.toggle('scrolled', y > 40);
           if (backToTop) {
             var show = y > 400;
@@ -104,34 +110,57 @@ import Footer from '../components/Footer.astro';
             backToTop.classList.toggle('translate-y-4', !show);
             backToTop.classList.toggle('translate-y-0', show);
           }
-
           if (progress) {
             var h = document.documentElement.scrollHeight - window.innerHeight;
             progress.style.transform = 'scaleX(' + (h > 0 ? y / h : 0) + ')';
           }
-
-          var pos = y + window.innerHeight / 3;
-          var currentId = sectionOffsets.length ? sectionOffsets[0].id : '';
-          for (var i = 0; i < sectionOffsets.length; i++) {
-            if (sectionOffsets[i].top <= pos) currentId = sectionOffsets[i].id;
-          }
-          for (var j = 0; j < navAnchors.length; j++) {
-            navAnchors[j].classList.toggle('active', navAnchors[j].getAttribute('href') === '#' + currentId);
-          }
         }
-        window.addEventListener('scroll', requestScroll, { passive: true });
-        window.addEventListener(
-          'resize',
-          function () {
-            cacheOffsets();
-            requestScroll();
-          },
-          { passive: true }
-        );
+        window.addEventListener('scroll', function () {
+          if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
+        }, { passive: true });
+
+        /* ---- Custom fixed-duration smooth scroll (distance-independent) ---- */
+        var scrolling = false;
+        function scrollToY(destY, cb) {
+          var maxY = document.documentElement.scrollHeight - window.innerHeight;
+          destY = Math.max(0, Math.min(destY, maxY));
+          if (prefersReduced) { window.scrollTo(0, destY); if (cb) cb(); return; }
+          var startY = window.scrollY;
+          var dist = destY - startY;
+          if (Math.abs(dist) < 2) { if (cb) cb(); return; }
+          var dur = 600, t0 = null;
+          scrolling = true;
+          function ease(p) { return 1 - Math.pow(1 - p, 3); }
+          function step(ts) {
+            if (t0 === null) t0 = ts;
+            var p = Math.min((ts - t0) / dur, 1);
+            window.scrollTo(0, startY + dist * ease(p));
+            if (p < 1) requestAnimationFrame(step);
+            else { scrolling = false; if (cb) cb(); }
+          }
+          requestAnimationFrame(step);
+        }
+
+        document.querySelectorAll('[data-scroll]').forEach(function (link) {
+          link.addEventListener('click', function (e) {
+            var hash = this.getAttribute('href');
+            if (!hash || hash.charAt(0) !== '#') return;
+            var target = document.querySelector(hash);
+            if (!target) return;
+            e.preventDefault();
+            if (navLinksMobile) navLinksMobile.classList.remove('open');
+            if (navToggle) navToggle.classList.remove('open');
+
+            pinnedId = target.id;
+            setActive(target.id);
+
+            var navH = nav ? nav.offsetHeight : 0;
+            var destY = target.getBoundingClientRect().top + window.scrollY - navH - 8;
+            scrollToY(destY, function () { pinnedId = null; });
+          });
+        });
 
         /* ---- Mobile nav toggle ---- */
-        var navToggle = document.getElementById('navToggle');
-        var navLinksMobile = document.getElementById('navLinksMobile');
         if (navToggle && navLinksMobile) {
           navToggle.addEventListener('click', function () {
             navLinksMobile.classList.toggle('open');
@@ -139,31 +168,12 @@ import Footer from '../components/Footer.astro';
           });
         }
 
-        /* ---- Smooth scroll for data-scroll links ---- */
-        document.querySelectorAll('[data-scroll]').forEach(function (link) {
-          link.addEventListener('click', function (e) {
-            var hash = this.getAttribute('href');
-            if (hash && hash.charAt(0) === '#') {
-              var target = document.querySelector(hash);
-              if (target) {
-                e.preventDefault();
-                var navH = nav ? nav.offsetHeight : 0;
-                var top = target.getBoundingClientRect().top + window.scrollY - navH - 8;
-                window.scrollTo({ top: top, behavior: 'smooth' });
-                if (navLinksMobile) navLinksMobile.classList.remove('open');
-                if (navToggle) navToggle.classList.remove('open');
-              }
-            }
-          });
-        });
-
-        /* ---- Reveal on scroll (IntersectionObserver) ---- */
+        /* ---- Reveal on scroll ---- */
         var reveals = document.querySelectorAll('.reveal, .stagger');
-        // Pre-assign incremental delays to staggered children
         document.querySelectorAll('.stagger').forEach(function (group) {
           var children = group.children;
           for (var k = 0; k < children.length; k++) {
-            children[k].style.setProperty('--stagger-delay', k * 90 + 'ms');
+            children[k].style.setProperty('--stagger-delay', k * 80 + 'ms');
           }
         });
         if ('IntersectionObserver' in window) {
@@ -177,16 +187,11 @@ import Footer from '../components/Footer.astro';
                 }
               });
             },
-            { threshold: 0.15 }
+            { threshold: 0.12 }
           );
-          reveals.forEach(function (el) {
-            io.observe(el);
-          });
+          reveals.forEach(function (el) { io.observe(el); });
         } else {
-          reveals.forEach(function (el) {
-            el.classList.add('in');
-            maybeAnimate(el);
-          });
+          reveals.forEach(function (el) { el.classList.add('in'); maybeAnimate(el); });
         }
 
         function maybeAnimate(el) {
@@ -200,8 +205,7 @@ import Footer from '../components/Footer.astro';
 
         function countUp(elm) {
           var target = parseInt(elm.getAttribute('data-count'), 10) || 0;
-          var dur = 1400,
-            start = null;
+          var dur = 1200, start = null;
           function step(ts) {
             if (!start) start = ts;
             var p = Math.min((ts - start) / dur, 1);
@@ -215,28 +219,20 @@ import Footer from '../components/Footer.astro';
 
         /* ---- Typing effect ---- */
         var typedEl = document.getElementById('typed');
-        if (typedEl) {
-          var phrases = ['SDE-1 @ AWS', 'Problem Solver', 'Backend Developer', 'Builder'];
-          var pi = 0,
-            ci = 0,
-            deleting = false;
+        if (typedEl && !prefersReduced) {
+          var phrases = ['SDE @ AWS', 'Problem Solver', 'Backend Developer', 'Builder'];
+          var pi = 0, ci = 0, deleting = false;
           function type() {
             var word = phrases[pi];
             typedEl.textContent = deleting ? word.substring(0, ci--) : word.substring(0, ci++);
             var delay = deleting ? 45 : 95;
-            if (!deleting && ci === word.length + 1) {
-              deleting = true;
-              delay = 1400;
-              ci = word.length;
-            } else if (deleting && ci === -1) {
-              deleting = false;
-              ci = 0;
-              pi = (pi + 1) % phrases.length;
-              delay = 350;
-            }
+            if (!deleting && ci === word.length + 1) { deleting = true; delay = 1400; ci = word.length; }
+            else if (deleting && ci === -1) { deleting = false; ci = 0; pi = (pi + 1) % phrases.length; delay = 350; }
             setTimeout(type, delay);
           }
           type();
+        } else if (typedEl) {
+          typedEl.textContent = 'SDE @ AWS';
         }
 
         /* ---- Portfolio filter ---- */
@@ -253,53 +249,13 @@ import Footer from '../components/Footer.astro';
             var cat = btn.getAttribute('data-filter');
             cards.forEach(function (card) {
               var cats = (card.getAttribute('data-cat') || '').split(' ');
-              var show = cat === 'all' || cats.indexOf(cat) !== -1;
-              card.classList.toggle('hide', !show);
+              card.classList.toggle('hide', !(cat === 'all' || cats.indexOf(cat) !== -1));
             });
-            cacheOffsets();
           });
         });
 
-        /* ---- Cursor-reactive background glow + hue shift ---- */
-        var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        var isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-
+        /* ---- 3D tilt on cards (fine-pointer, motion-OK only) ---- */
         if (!prefersReduced && isFinePointer) {
-          var hue = document.getElementById('hueShift');
-          var gx = window.innerWidth / 2,
-            gy = window.innerHeight / 2;
-          var glowRaf = null;
-          var shown = false;
-
-          function animateGlow() {
-            glowRaf = null;
-            var xPct = (gx / window.innerWidth) * 100;
-            var yPct = (gy / window.innerHeight) * 100;
-
-            if (hue) {
-              // position-driven hue tint across the whole backdrop (no circular shape)
-              var h1 = Math.round(xPct * 3); // 0..300 across the screen
-              var h2 = (h1 + 70) % 360;
-              hue.style.background =
-                'radial-gradient(120% 120% at ' + xPct + '% ' + yPct + '%, hsla(' + h1 + ',85%,58%,0.26), hsla(' + h2 + ',85%,52%,0.12) 40%, transparent 80%)';
-            }
-          }
-
-          window.addEventListener(
-            'mousemove',
-            function (e) {
-              gx = e.clientX;
-              gy = e.clientY;
-              if (!shown) {
-                shown = true;
-                if (hue) hue.classList.replace('opacity-0', 'opacity-100');
-              }
-              if (!glowRaf) glowRaf = requestAnimationFrame(animateGlow);
-            },
-            { passive: true }
-          );
-
-          /* ---- Magnetic 3D tilt on interactive cards ---- */
           document.querySelectorAll('.tilt').forEach(function (card) {
             var raf = null;
             card.addEventListener('mousemove', function (e) {
@@ -309,24 +265,15 @@ import Footer from '../components/Footer.astro';
                 var r = card.getBoundingClientRect();
                 var px = (e.clientX - r.left) / r.width - 0.5;
                 var py = (e.clientY - r.top) / r.height - 0.5;
-                var max = 8; // degrees
                 card.style.transform =
-                  'perspective(900px) rotateY(' + px * max + 'deg) rotateX(' + -py * max + 'deg) translateY(-6px)';
+                  'perspective(900px) rotateY(' + px * 7 + 'deg) rotateX(' + -py * 7 + 'deg) translateY(-6px)';
               });
             });
-            card.addEventListener('mouseleave', function () {
-              card.style.transform = '';
-            });
+            card.addEventListener('mouseleave', function () { card.style.transform = ''; });
           });
         }
 
-        cacheOffsets();
-        renderScroll();
-
-        window.addEventListener('load', function () {
-          cacheOffsets();
-          renderScroll();
-        });
+        onScroll();
       });
     })();
   </script>

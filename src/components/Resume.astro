@@ -1,0 +1,157 @@
+---
+import Icon from './Icon.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+
+const summary =
+  'Software Development Engineer with 2+ years designing, building, and operating large-scale distributed systems and microservices on AWS. At Amazon OpenSearch I deliver customer-facing features end-to-end in Java and Go, improve the reliability and performance of production services, and build monitoring, alarming, and infrastructure-as-code (AWS CDK/CloudFormation).';
+
+const experience = [
+  {
+    period: 'Feb 2025 — Present',
+    role: 'Software Development Engineer',
+    company: 'Amazon (AWS OpenSearch)',
+    meta: 'Full Time · Bengaluru, India',
+    bullets: [
+      'Delivered two customer-facing index settings end-to-end across 9 Java/Go microservices, feature-flagged with a staged beta-to-prod rollout and validated across 38 test scenarios.',
+      'Eliminated STS AssumeRole throttling on the bulk-delete path by caching AWS client singletons — ~3,400 errors per run to zero, and up to 30% faster collection drains.',
+      'Consolidated IAM inline policies 8 → 2 (~70% smaller) to clear the 10 KB limit and unblock a failing production CloudFormation (CDK) deployment.',
+      'Authored Go observability policies for the cluster-manager fleet (JVM pressure, node-role mismatch, fault detection) with CloudWatch alarms and staged global rollout.',
+    ],
+  },
+  {
+    period: 'Sep 2024 — Jan 2025',
+    role: 'Advanced App Engineering Analyst',
+    company: 'Accenture',
+    meta: 'Full Time · Hyderabad, India',
+    bullets: [
+      'Completed intensive Big Data training (Hadoop, Hive, Cassandra, MySQL) and applied it to hands-on data-pipeline exercises.',
+    ],
+  },
+  {
+    period: 'Jun 2023 — Jul 2023',
+    role: 'Advanced App Engineering Analyst (Intern)',
+    company: 'Accenture',
+    meta: 'Internship · Remote',
+    bullets: [
+      'Led vulnerability assessments in SAP systems, detecting and documenting critical security gaps.',
+      'Proposed mitigation strategies that cut average vulnerability resolution time by 25%.',
+    ],
+  },
+];
+
+const education = [
+  {
+    period: 'Jul 2020 — Jul 2024',
+    title: 'B.Tech, Computer Science & Engineering',
+    place: 'National Institute of Technology, Tiruchirappalli',
+  },
+  {
+    period: 'Jul 2018 — Mar 2020',
+    title: 'Class XI & XII',
+    place: 'Saraswati Public School',
+  },
+  {
+    period: 'Apr 2004 — Mar 2018',
+    title: 'High School (Class X)',
+    place: 'Jawahar Lal Nehru High School',
+  },
+];
+
+const skillGroups = [
+  { label: 'Languages', items: ['Java', 'Go', 'Python', 'C/C++', 'JavaScript', 'TypeScript'] },
+  { label: 'Cloud & Infra', items: ['AWS', 'CDK / CloudFormation', 'Lambda', 'EC2', 'S3', 'DynamoDB', 'CloudWatch', 'Step Functions', 'IAM / STS'] },
+  { label: 'Systems', items: ['Distributed Systems', 'Microservices', 'REST APIs', 'Observability', 'CI/CD'] },
+];
+---
+
+<section id="resume" class="py-24 px-6 md:px-10">
+  <div class="mx-auto max-w-content">
+    <div class="reveal mb-12 flex flex-wrap items-end justify-between gap-6">
+      <div>
+        <span class="text-accent2 font-semibold tracking-widest uppercase text-sm">02 — Résumé</span>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-ink mt-2">Experience &amp; Education</h2>
+      </div>
+      <a class="btn btn-primary" href={`${base}resume.pdf`} download>
+        <Icon name="download" class="w-4 h-4" /> Download PDF
+      </a>
+    </div>
+
+    <!-- Summary -->
+    <div class="reveal rounded-2xl border border-line bg-surface p-6 md:p-8 mb-10">
+      <p class="text-muted leading-relaxed">{summary}</p>
+    </div>
+
+    <div class="grid lg:grid-cols-[1.6fr_1fr] gap-10 items-start">
+      <!-- Experience timeline -->
+      <div>
+        <h3 class="font-display text-lg font-semibold text-ink mb-6 flex items-center gap-2 h-7">
+          <span class="h-5 w-1 rounded grad inline-block"></span> Experience
+        </h3>
+        <div class="relative pl-8">
+          <div class="absolute left-[7px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-accent via-accent2 to-transparent"></div>
+          <div class="stagger flex flex-col gap-8">
+            {experience.map((job) => (
+              <div class="relative">
+                <span class="absolute -left-8 top-1.5 w-4 h-4 rounded-full grad shadow-[0_0_0_4px_rgba(124,92,255,0.15)]"></span>
+                <p class="text-accent2 text-xs font-semibold tracking-wide mb-1">{job.period}</p>
+                <h4 class="font-display text-lg font-semibold text-ink">
+                  {job.role} · <span class="text-ink/90">{job.company}</span>
+                </h4>
+                <p class="text-muted text-xs mt-0.5 mb-3">{job.meta}</p>
+                <ul class="flex flex-col gap-2">
+                  {job.bullets.map((b) => (
+                    <li class="flex gap-2 text-sm text-muted leading-relaxed">
+                      <span class="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full grad"></span>
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Education + Skills snapshot -->
+      <div class="flex flex-col gap-10">
+        <div>
+          <h3 class="font-display text-lg font-semibold text-ink mb-6 flex items-center gap-2 h-7">
+            <span class="h-5 w-1 rounded grad inline-block"></span> Education
+          </h3>
+          <div class="relative pl-8">
+            <div class="absolute left-[7px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-accent via-accent2 to-transparent"></div>
+            <div class="stagger flex flex-col gap-7">
+              {education.map((ed) => (
+                <div class="relative">
+                  <span class="absolute -left-8 top-1.5 w-4 h-4 rounded-full grad shadow-[0_0_0_4px_rgba(124,92,255,0.15)]"></span>
+                  <p class="text-accent2 text-xs font-semibold tracking-wide mb-1">{ed.period}</p>
+                  <h4 class="font-display text-base font-semibold text-ink leading-snug">{ed.title}</h4>
+                  <p class="text-muted text-sm mt-0.5">{ed.place}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal rounded-2xl border border-line bg-surface p-6">
+          <h3 class="font-display text-base font-semibold text-ink mb-4 flex items-center gap-2">
+            <span class="h-5 w-1 rounded grad inline-block"></span> Core Skills
+          </h3>
+          <div class="flex flex-col gap-4">
+            {skillGroups.map((g) => (
+              <div>
+                <p class="text-xs font-semibold text-accent2 uppercase tracking-widest mb-2">{g.label}</p>
+                <div class="flex flex-wrap gap-2">
+                  {g.items.map((s) => (
+                    <span class="px-3 py-1 rounded-full border border-line bg-surface2 text-xs text-ink/85">{s}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

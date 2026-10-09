@@ -1,23 +1,22 @@
 ---
 const stats = [
   { count: 900, label: 'LeetCode solved' },
-  { count: 2
-  , label: 'Companies' },
-  { count: 15, label: 'Technologies' },
+  { count: 2, label: 'IEEE publications' },
+  { count: 2, label: 'Companies' },
 ];
 
 const skills = [
-  { name: 'C/C++', value: 85 },
-  { name: 'Java', value: 70 },
-  { name: 'HTML/CSS', value: 75 },
-  { name: 'JavaScript', value: 60 },
-  { name: 'Node.js/Express', value: 60 },
-  { name: 'Go', value: 60 },
-  { name: 'Python', value: 60 },
+  { name: 'Java', value: 90 },
+  { name: 'Go', value: 85 },
+  { name: 'AWS (CDK, Lambda, DynamoDB)', value: 85 },
+  { name: 'Distributed Systems & Microservices', value: 80 },
+  { name: 'Python', value: 75 },
+  { name: 'C / C++', value: 75 },
+  { name: 'JavaScript / TypeScript', value: 65 },
   { name: 'Hyperledger Fabric', value: 60 },
 ];
 
-const chips = ['MySQL', 'MongoDB', 'Cassandra', 'Hive', 'Hadoop', 'LaTeX', 'Microsoft Office', 'Blender', 'Unity'];
+const chips = ['DynamoDB', 'MySQL', 'Cassandra', 'Hive', 'CloudWatch', 'CloudFormation / CDK', 'Step Functions', 'Gin', 'Flutter', 'Git / CI-CD', 'REST APIs', 'System Design', 'LaTeX'];
 ---
 
 <section id="about" class="py-24 px-6 md:px-10">
@@ -30,14 +29,15 @@ const chips = ['MySQL', 'MongoDB', 'Cassandra', 'Hive', 'Hadoop', 'LaTeX', 'Micr
     <div class="grid md:grid-cols-2 gap-8">
       <div class="reveal rounded-2xl border border-line bg-surface p-8">
         <p class="text-muted leading-relaxed mb-4">
-          I'm Rahul Bangar. I completed my B.Tech in Computer Science and Engineering from the
-          National Institute of Technology, Tiruchirappalli (NIT Trichy). I interned at Accenture
-          working with SAP, and I'm currently a Software Development Engineer&nbsp;I at AWS.
+          I'm Rahul Bangar, a Software Development Engineer at <strong class="text-ink">Amazon (AWS OpenSearch)</strong>
+          with 2+ years of experience designing, building, and operating large-scale distributed systems and
+          microservices on AWS. I ship customer-facing features end-to-end in <strong class="text-ink">Java and Go</strong>,
+          and build the monitoring, alarming, and infrastructure-as-code (AWS CDK/CloudFormation) that keeps them reliable.
         </p>
         <p class="text-muted leading-relaxed mb-8">
-          I love problem solving — I've successfully solved over <strong class="text-ink">900 problems</strong> on
-          LeetCode. I enjoy building things across the stack, from blockchain and backend systems
-          to the occasional 3D and game-dev experiment.
+          I earned my B.Tech in Computer Science from <strong class="text-ink">NIT Tiruchirappalli</strong>, love
+          problem solving (900+ LeetCode problems solved), and enjoy working across distributed systems, cloud
+          infrastructure, REST APIs, and observability.
         </p>
         <div class="grid grid-cols-3 gap-4">
           {stats.map((s) => (

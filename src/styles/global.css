@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 html {
-  scroll-behavior: smooth;
   scroll-padding-top: 90px;
 }
 
@@ -12,11 +11,6 @@ body {
   color: #e8e9f3;
   font-family: 'Inter', system-ui, sans-serif;
   overflow-x: hidden;
-}
-
-section[id] {
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 900px;
 }
 
 @layer components {
@@ -117,6 +111,45 @@ section[id] {
     }
   }
 
+  /* Animated gradient border: a full multi-color conic gradient rotates so all
+     the border colors circulate around the frame. A mask keeps only the ~3px
+     ring (border box), so the center image is untouched. Rotating the whole
+     gradient (not a single spot) reads as even on all sides. */
+  @property --frame-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+  .frame-shimmer {
+    position: relative;
+    background: #0e0f24; /* fallback base */
+  }
+
+  .frame-shimmer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 3px; /* ring thickness */
+    background: conic-gradient(
+      from var(--frame-angle),
+      #7c5cff, #22d3ee, #ffffff, #22d3ee, #7c5cff
+    );
+    /* keep only the ring: fill the padding box, subtract the content box */
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: frame-rotate 4s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes frame-rotate {
+    to {
+      --frame-angle: 360deg;
+    }
+  }
+
   /* Light sweep across buttons on hover */
   .btn {
     position: relative;
@@ -149,6 +182,9 @@ section[id] {
   .tilt {
     transform-style: preserve-3d;
     transition: transform 0.25s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  .tilt:hover {
     will-change: transform;
   }
 
@@ -199,6 +235,10 @@ section[id] {
   .shimmer {
     animation: none !important;
     background-position: 0 center !important;
+  }
+
+  .frame-shimmer::before {
+    animation: none !important;
   }
 
   .tilt {

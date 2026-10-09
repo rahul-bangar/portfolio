@@ -23,8 +23,9 @@ const socials = [
         <span id="typed"></span><span class="text-accent animate-blink">|</span>
       </h2>
       <p class="text-muted text-base md:text-lg leading-relaxed max-w-xl mb-8">
-        Software Development Engineer at AWS. I love turning hard problems into clean,
-        reliable systems — and I've solved 900+ problems on LeetCode along the way.
+        Software Development Engineer at AWS OpenSearch, building large-scale distributed systems
+        and microservices in Java &amp; Go. I ship reliable, customer-facing features end-to-end —
+        and I've solved 900+ problems on LeetCode along the way.
       </p>
       <div class="flex flex-wrap items-center gap-4 mb-8">
         <a class="btn btn-primary" href={`${base}resume.pdf`} download>
@@ -51,16 +52,16 @@ const socials = [
 
     <div class="relative flex justify-center md:justify-end">
       <div class="relative w-[260px] md:w-[300px]">
-        <!-- Glow halo -->
+        <!-- Glow halo: static blur, animates only scale+opacity (GPU-cheap) -->
         <div class="absolute -inset-6 rounded-[2rem] bg-gradient-to-br from-accent/40 to-accent2/30 blur-2xl animate-halo"></div>
-        <!-- Decorative spinning dashed ring -->
+        <!-- Decorative spinning dashed ring (transform-only rotation) -->
         <div
           class="absolute -inset-4 rounded-[2rem] border-2 border-dashed border-accent2/30 animate-spin-slow"
           aria-hidden="true"
         ></div>
-        <!-- Portrait frame -->
-        <div class="relative rounded-2xl p-[3px] bg-gradient-to-br from-accent to-accent2 shadow-[0_20px_60px_-15px_rgba(124,92,255,0.5)]">
-          <div class="rounded-[0.95rem] overflow-hidden bg-bg2">
+        <!-- Portrait frame: full gradient border rotates around it (.frame-shimmer) -->
+        <div class="frame-shimmer relative rounded-2xl p-[3px] shadow-[0_20px_60px_-15px_rgba(124,92,255,0.5)]">
+          <div class="relative z-10 rounded-[0.95rem] overflow-hidden bg-bg2">
             <Image
               src={badge}
               alt="Rahul Bangar"
