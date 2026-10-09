@@ -1,1 +1,17 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.astro/
+
+# Logs
+npm-debug.log*
+*.log
+
+# OS
 *.DS_Store
+.DS_Store
+
+# Astro generated types
+src/env.d.ts

@@ -1,0 +1,333 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Experience from '../components/Experience.astro';
+import Education from '../components/Education.astro';
+import Work from '../components/Work.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base>
+  <!-- Animated aurora background -->
+  <div class="fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+    <span
+      class="absolute top-[-10%] left-[-5%] w-[480px] h-[480px] rounded-full bg-accent/30 blur-[110px] animate-float will-change-transform"
+    ></span>
+    <span
+      class="absolute top-[30%] right-[-10%] w-[420px] h-[420px] rounded-full bg-accent2/25 blur-[110px] animate-float will-change-transform"
+      style="animation-delay: -7s;"
+    ></span>
+    <span
+      class="absolute bottom-[-15%] left-[20%] w-[520px] h-[520px] rounded-full bg-accent3/20 blur-[120px] animate-float will-change-transform"
+      style="animation-delay: -14s;"
+    ></span>
+  </div>
+
+  <!-- Hue overlay driven by cursor position -->
+  <div
+    id="hueShift"
+    class="fixed inset-0 -z-10 pointer-events-none opacity-0 transition-opacity duration-700 mix-blend-screen"
+    aria-hidden="true"
+  >
+  </div>
+
+  <!-- Scroll progress bar -->
+  <div
+    id="scrollProgress"
+    class="fixed top-0 left-0 right-0 h-[3px] origin-left scale-x-0 grad z-50"
+  >
+  </div>
+
+  <Nav />
+
+  <main>
+    <Hero />
+    <About />
+    <Experience />
+    <Education />
+    <Work />
+    <Contact />
+  </main>
+
+  <Footer />
+
+  <a
+    id="backToTop"
+    href="#home"
+    data-scroll
+    aria-label="Back to top"
+    class="show:opacity-100 fixed bottom-6 right-6 z-40 w-11 h-11 rounded-full grad flex items-center justify-center text-bg shadow-lg opacity-0 pointer-events-none translate-y-4 transition-all duration-300"
+  >
+    <Icon name="arrow-up" class="w-4 h-4" />
+  </a>
+
+  <script>
+    (function () {
+      'use strict';
+
+      document.addEventListener('DOMContentLoaded', function () {
+        /* ---- Navbar scrolled state + scroll progress (rAF-throttled) ---- */
+        var nav = document.getElementById('nav');
+        var progress = document.getElementById('scrollProgress');
+        var backToTop = document.getElementById('backToTop');
+        var sections = Array.prototype.slice.call(document.querySelectorAll('section[id]'));
+        var navAnchors = Array.prototype.slice.call(document.querySelectorAll('#navLinks a, #navLinksMobile a'));
+
+        var sectionOffsets = [];
+        function cacheOffsets() {
+          sectionOffsets = sections.map(function (sec) {
+            return { id: sec.id, top: sec.getBoundingClientRect().top + window.scrollY };
+          });
+        }
+
+        var ticking = false;
+        function requestScroll() {
+          if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(renderScroll);
+          }
+        }
+        function renderScroll() {
+          ticking = false;
+          var y = window.scrollY || document.documentElement.scrollTop;
+
+          if (nav) nav.classList.toggle('scrolled', y > 40);
+          if (backToTop) {
+            var show = y > 400;
+            backToTop.classList.toggle('opacity-100', show);
+            backToTop.classList.toggle('opacity-0', !show);
+            backToTop.classList.toggle('pointer-events-none', !show);
+            backToTop.classList.toggle('translate-y-4', !show);
+            backToTop.classList.toggle('translate-y-0', show);
+          }
+
+          if (progress) {
+            var h = document.documentElement.scrollHeight - window.innerHeight;
+            progress.style.transform = 'scaleX(' + (h > 0 ? y / h : 0) + ')';
+          }
+
+          var pos = y + window.innerHeight / 3;
+          var currentId = sectionOffsets.length ? sectionOffsets[0].id : '';
+          for (var i = 0; i < sectionOffsets.length; i++) {
+            if (sectionOffsets[i].top <= pos) currentId = sectionOffsets[i].id;
+          }
+          for (var j = 0; j < navAnchors.length; j++) {
+            navAnchors[j].classList.toggle('active', navAnchors[j].getAttribute('href') === '#' + currentId);
+          }
+        }
+        window.addEventListener('scroll', requestScroll, { passive: true });
+        window.addEventListener(
+          'resize',
+          function () {
+            cacheOffsets();
+            requestScroll();
+          },
+          { passive: true }
+        );
+
+        /* ---- Mobile nav toggle ---- */
+        var navToggle = document.getElementById('navToggle');
+        var navLinksMobile = document.getElementById('navLinksMobile');
+        if (navToggle && navLinksMobile) {
+          navToggle.addEventListener('click', function () {
+            navLinksMobile.classList.toggle('open');
+            navToggle.classList.toggle('open');
+          });
+        }
+
+        /* ---- Smooth scroll for data-scroll links ---- */
+        document.querySelectorAll('[data-scroll]').forEach(function (link) {
+          link.addEventListener('click', function (e) {
+            var hash = this.getAttribute('href');
+            if (hash && hash.charAt(0) === '#') {
+              var target = document.querySelector(hash);
+              if (target) {
+                e.preventDefault();
+                var navH = nav ? nav.offsetHeight : 0;
+                var top = target.getBoundingClientRect().top + window.scrollY - navH - 8;
+                window.scrollTo({ top: top, behavior: 'smooth' });
+                if (navLinksMobile) navLinksMobile.classList.remove('open');
+                if (navToggle) navToggle.classList.remove('open');
+              }
+            }
+          });
+        });
+
+        /* ---- Reveal on scroll (IntersectionObserver) ---- */
+        var reveals = document.querySelectorAll('.reveal, .stagger');
+        // Pre-assign incremental delays to staggered children
+        document.querySelectorAll('.stagger').forEach(function (group) {
+          var children = group.children;
+          for (var k = 0; k < children.length; k++) {
+            children[k].style.setProperty('--stagger-delay', k * 90 + 'ms');
+          }
+        });
+        if ('IntersectionObserver' in window) {
+          var io = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('in');
+                  maybeAnimate(entry.target);
+                  io.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold: 0.15 }
+          );
+          reveals.forEach(function (el) {
+            io.observe(el);
+          });
+        } else {
+          reveals.forEach(function (el) {
+            el.classList.add('in');
+            maybeAnimate(el);
+          });
+        }
+
+        function maybeAnimate(el) {
+          el.querySelectorAll('.skill').forEach(function (skill) {
+            var v = skill.getAttribute('data-value');
+            var bar = skill.querySelector('.bar i');
+            if (bar && v) bar.style.width = v + '%';
+          });
+          el.querySelectorAll('.num[data-count]').forEach(countUp);
+        }
+
+        function countUp(elm) {
+          var target = parseInt(elm.getAttribute('data-count'), 10) || 0;
+          var dur = 1400,
+            start = null;
+          function step(ts) {
+            if (!start) start = ts;
+            var p = Math.min((ts - start) / dur, 1);
+            var eased = 1 - Math.pow(1 - p, 3);
+            elm.textContent = Math.floor(eased * target) + (target >= 100 ? '+' : '');
+            if (p < 1) requestAnimationFrame(step);
+            else elm.textContent = target + (target >= 100 ? '+' : '');
+          }
+          requestAnimationFrame(step);
+        }
+
+        /* ---- Typing effect ---- */
+        var typedEl = document.getElementById('typed');
+        if (typedEl) {
+          var phrases = ['SDE-1 @ AWS', 'Problem Solver', 'Backend Developer', 'Builder'];
+          var pi = 0,
+            ci = 0,
+            deleting = false;
+          function type() {
+            var word = phrases[pi];
+            typedEl.textContent = deleting ? word.substring(0, ci--) : word.substring(0, ci++);
+            var delay = deleting ? 45 : 95;
+            if (!deleting && ci === word.length + 1) {
+              deleting = true;
+              delay = 1400;
+              ci = word.length;
+            } else if (deleting && ci === -1) {
+              deleting = false;
+              ci = 0;
+              pi = (pi + 1) % phrases.length;
+              delay = 350;
+            }
+            setTimeout(type, delay);
+          }
+          type();
+        }
+
+        /* ---- Portfolio filter ---- */
+        var filters = document.querySelectorAll('.filter');
+        var cards = document.querySelectorAll('.work-card');
+        filters.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            filters.forEach(function (f) {
+              f.classList.remove('active', 'bg-accent/20', 'border-accent', 'text-ink');
+              f.classList.add('text-muted');
+            });
+            btn.classList.add('active', 'bg-accent/20', 'border-accent', 'text-ink');
+            btn.classList.remove('text-muted');
+            var cat = btn.getAttribute('data-filter');
+            cards.forEach(function (card) {
+              var cats = (card.getAttribute('data-cat') || '').split(' ');
+              var show = cat === 'all' || cats.indexOf(cat) !== -1;
+              card.classList.toggle('hide', !show);
+            });
+            cacheOffsets();
+          });
+        });
+
+        /* ---- Cursor-reactive background glow + hue shift ---- */
+        var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+        if (!prefersReduced && isFinePointer) {
+          var hue = document.getElementById('hueShift');
+          var gx = window.innerWidth / 2,
+            gy = window.innerHeight / 2;
+          var glowRaf = null;
+          var shown = false;
+
+          function animateGlow() {
+            glowRaf = null;
+            var xPct = (gx / window.innerWidth) * 100;
+            var yPct = (gy / window.innerHeight) * 100;
+
+            if (hue) {
+              // position-driven hue tint across the whole backdrop (no circular shape)
+              var h1 = Math.round(xPct * 3); // 0..300 across the screen
+              var h2 = (h1 + 70) % 360;
+              hue.style.background =
+                'radial-gradient(120% 120% at ' + xPct + '% ' + yPct + '%, hsla(' + h1 + ',85%,58%,0.26), hsla(' + h2 + ',85%,52%,0.12) 40%, transparent 80%)';
+            }
+          }
+
+          window.addEventListener(
+            'mousemove',
+            function (e) {
+              gx = e.clientX;
+              gy = e.clientY;
+              if (!shown) {
+                shown = true;
+                if (hue) hue.classList.replace('opacity-0', 'opacity-100');
+              }
+              if (!glowRaf) glowRaf = requestAnimationFrame(animateGlow);
+            },
+            { passive: true }
+          );
+
+          /* ---- Magnetic 3D tilt on interactive cards ---- */
+          document.querySelectorAll('.tilt').forEach(function (card) {
+            var raf = null;
+            card.addEventListener('mousemove', function (e) {
+              if (raf) return;
+              raf = requestAnimationFrame(function () {
+                raf = null;
+                var r = card.getBoundingClientRect();
+                var px = (e.clientX - r.left) / r.width - 0.5;
+                var py = (e.clientY - r.top) / r.height - 0.5;
+                var max = 8; // degrees
+                card.style.transform =
+                  'perspective(900px) rotateY(' + px * max + 'deg) rotateX(' + -py * max + 'deg) translateY(-6px)';
+              });
+            });
+            card.addEventListener('mouseleave', function () {
+              card.style.transform = '';
+            });
+          });
+        }
+
+        cacheOffsets();
+        renderScroll();
+
+        window.addEventListener('load', function () {
+          cacheOffsets();
+          renderScroll();
+        });
+      });
+    })();
+  </script>
+</Base>

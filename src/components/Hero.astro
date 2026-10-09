@@ -1,0 +1,89 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import badge from '../img/irahull-badge.png';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const socials = [
+  { href: 'https://www.linkedin.com/in/irahulbangar7/', icon: 'linkedin', label: 'LinkedIn' },
+  { href: 'https://github.com/rahul-bangar', icon: 'github', label: 'GitHub' },
+  { href: 'https://www.instagram.com/irahulbangar7/', icon: 'instagram', label: 'Instagram' },
+  { href: 'https://www.facebook.com/irahulbangar7/', icon: 'facebook', label: 'Facebook' },
+];
+---
+
+<section id="home" class="relative min-h-screen flex items-center px-6 md:px-10 pt-28 pb-20">
+  <div class="reveal in mx-auto w-full max-w-content grid md:grid-cols-[1.2fr_0.8fr] gap-12 items-center">
+    <div>
+      <p class="text-accent2 font-semibold tracking-widest uppercase text-sm mb-3">Hello, I'm</p>
+      <h1 class="shimmer font-display font-extrabold leading-tight mb-3" style="font-size: clamp(2.5rem, 6vw, 4.5rem);">
+        Rahul Bangar
+      </h1>
+      <h2 class="font-display text-xl md:text-2xl text-ink/90 mb-5 h-8">
+        <span id="typed"></span><span class="text-accent animate-blink">|</span>
+      </h2>
+      <p class="text-muted text-base md:text-lg leading-relaxed max-w-xl mb-8">
+        Software Development Engineer at AWS. I love turning hard problems into clean,
+        reliable systems — and I've solved 900+ problems on LeetCode along the way.
+      </p>
+      <div class="flex flex-wrap items-center gap-4 mb-8">
+        <a class="btn btn-primary" href={`${base}resume.pdf`} download>
+          <Icon name="download" class="w-4 h-4" /> Download Resume
+        </a>
+        <a class="btn btn-ghost" href="mailto:bangarrahul.b@gmail.com">
+          <Icon name="paper-plane" class="w-4 h-4" /> Hire Me
+        </a>
+      </div>
+      <div class="flex items-center gap-4">
+        {socials.map((s) => (
+          <a
+            href={s.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={s.label}
+            class="w-10 h-10 flex items-center justify-center rounded-full border border-line text-muted hover:text-ink hover:border-accent2 transition-colors"
+          >
+            <Icon name={s.icon} class="w-[18px] h-[18px]" />
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <div class="relative flex justify-center md:justify-end">
+      <div class="relative w-[260px] md:w-[300px]">
+        <!-- Glow halo -->
+        <div class="absolute -inset-6 rounded-[2rem] bg-gradient-to-br from-accent/40 to-accent2/30 blur-2xl animate-halo"></div>
+        <!-- Decorative spinning dashed ring -->
+        <div
+          class="absolute -inset-4 rounded-[2rem] border-2 border-dashed border-accent2/30 animate-spin-slow"
+          aria-hidden="true"
+        ></div>
+        <!-- Portrait frame -->
+        <div class="relative rounded-2xl p-[3px] bg-gradient-to-br from-accent to-accent2 shadow-[0_20px_60px_-15px_rgba(124,92,255,0.5)]">
+          <div class="rounded-[0.95rem] overflow-hidden bg-bg2">
+            <Image
+              src={badge}
+              alt="Rahul Bangar"
+              width={300}
+              height={710}
+              widths={[300, 600]}
+              sizes="300px"
+              format="webp"
+              loading="eager"
+              class="w-full h-auto object-cover aspect-[296/700]"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a
+    href="#about"
+    data-scroll
+    aria-label="Scroll down"
+    class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted"
+  >
+    <span class="w-[2px] h-8 bg-gradient-to-b from-accent to-accent2 animate-cue"></span>
+  </a>
+</section>

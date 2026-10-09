@@ -1,0 +1,133 @@
+---
+import Icon from './Icon.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+
+const filters = [
+  { key: 'all', label: 'All' },
+  { key: 'block', label: 'Blockchain' },
+  { key: 'web', label: 'Web' },
+  { key: 'des', label: 'Design' },
+  { key: 'res', label: 'Research' },
+];
+
+const projects = [
+  {
+    cat: 'block res',
+    icon: 'cubes',
+    gradient: 'from-[#7c5cff] to-[#4324b8]',
+    tag: 'Blockchain',
+    title: 'BlockMQ',
+    desc: 'A blockchain-backed message queue exploring decentralized, tamper-evident messaging — my final year research project.',
+    stack: ['Hyperledger Fabric', 'Go', 'Docker'],
+    links: [
+      { label: 'View on GitHub', href: 'https://github.com/rahul-bangar/FYP', icon: 'github' },
+    ],
+  },
+  {
+    cat: 'web',
+    icon: 'calculator',
+    gradient: 'from-[#22d3ee] to-[#0e7490]',
+    tag: 'Web',
+    title: 'Arithmetic Calculator',
+    desc: 'A clean, fully responsive calculator web app with keyboard support and a minimal, accessible UI.',
+    stack: ['JavaScript', 'HTML', 'CSS'],
+    links: [
+      { label: 'Live Demo', href: 'https://rahul-bangar.github.io/calc/', icon: 'external-link' },
+    ],
+  },
+  {
+    cat: 'des',
+    icon: 'microchip',
+    gradient: 'from-[#ff6f91] to-[#b4295a]',
+    tag: 'Compiler Design',
+    title: 'Mini C Compiler',
+    desc: 'A compiler for a subset of C — full pipeline from lexical analysis and parsing through to intermediate code generation.',
+    stack: ['C', 'Lex', 'Yacc'],
+    links: [
+      { label: 'View on GitHub', href: 'https://github.com/rahul-bangar/Compiler-Project', icon: 'github' },
+    ],
+  },
+  {
+    cat: 'res',
+    icon: 'flask',
+    gradient: 'from-[#f59e0b] to-[#b45309]',
+    tag: 'Research',
+    title: 'mpQUAD',
+    desc: 'Published research work presented at ACCESS\u201923. Read the full paper below.',
+    stack: ['Research', 'IEEE ACCESS'],
+    links: [
+      { label: 'Read Paper', href: `${base}ACCESS23_paper_9969.pdf`, icon: 'file-pdf' },
+    ],
+  },
+];
+---
+
+<section id="portfolio" class="py-24 px-6 md:px-10">
+  <div class="mx-auto max-w-content">
+    <div class="reveal mb-10">
+      <span class="text-accent2 font-semibold tracking-widest uppercase text-sm">04 — Work</span>
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-ink mt-2">Selected Projects</h2>
+    </div>
+
+    <div class="reveal flex flex-wrap gap-3 mb-10">
+      {filters.map((f, i) => (
+        <button
+          class:list={["filter px-5 py-2 rounded-full text-sm font-medium border border-line transition-colors", i === 0 ? "active bg-accent/20 border-accent text-ink" : "text-muted hover:text-ink"]}
+          data-filter={f.key}
+        >
+          {f.label}
+        </button>
+      ))}
+    </div>
+
+    <div class="stagger grid sm:grid-cols-2 gap-6">
+      {projects.map((p) => (
+        <div
+          class="work-card tilt glow-card group flex flex-col rounded-2xl border border-line bg-surface overflow-hidden hover:border-accent/60 hover:shadow-[0_20px_60px_-20px_rgba(124,92,255,0.45)]"
+          data-cat={p.cat}
+        >
+          <div class={`relative h-40 bg-gradient-to-br ${p.gradient} flex items-center justify-center overflow-hidden`}>
+            <div class="absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_1px_1px,#fff_1px,transparent_0)] [background-size:18px_18px]"></div>
+            <Icon name={p.icon} class="w-14 h-14 text-white/90 drop-shadow-lg transition-transform duration-500 group-hover:scale-110" />
+            <span class="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold bg-black/30 backdrop-blur text-white border border-white/20">
+              {p.tag}
+            </span>
+          </div>
+
+          <div class="tilt-inner flex flex-col flex-1 p-6">
+            <h3 class="font-display text-lg font-semibold text-ink mb-2">{p.title}</h3>
+            <p class="text-muted text-sm leading-relaxed mb-4">{p.desc}</p>
+
+            <div class="flex flex-wrap gap-2 mb-5">
+              {p.stack.map((s) => (
+                <span class="px-2.5 py-1 rounded-md text-xs font-medium bg-surface2 border border-line text-ink/80">
+                  {s}
+                </span>
+              ))}
+            </div>
+
+            <div class="mt-auto flex flex-wrap gap-4">
+              {p.links.map((link) => (
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 text-sm font-semibold text-ink hover:text-accent2 transition-colors"
+                >
+                  <Icon name={link.icon} class="w-4 h-4" /> {link.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .work-card.hide {
+    display: none;
+  }
+</style>

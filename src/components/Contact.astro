@@ -1,0 +1,139 @@
+---
+import Icon from './Icon.astro';
+const socials = [
+  { href: 'https://www.linkedin.com/in/irahulbangar7/', icon: 'linkedin', label: 'LinkedIn' },
+  { href: 'https://github.com/rahul-bangar', icon: 'github', label: 'GitHub' },
+  { href: 'https://www.instagram.com/irahulbangar7/', icon: 'instagram', label: 'Instagram' },
+  { href: 'https://www.facebook.com/irahulbangar7/', icon: 'facebook', label: 'Facebook' },
+];
+---
+
+<section id="contact" class="py-24 px-6 md:px-10">
+  <div class="mx-auto max-w-content">
+    <div class="reveal mb-14">
+      <span class="text-accent2 font-semibold tracking-widest uppercase text-sm">05 — Contact</span>
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-ink mt-2">Let's Talk</h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-10">
+      <div class="reveal rounded-2xl border border-line bg-surface p-8">
+        <h3 class="font-display text-xl font-semibold text-ink mb-1">Rahul Bangar</h3>
+        <p class="text-muted mb-6">Software Development Engineer</p>
+
+        <ul class="flex flex-col gap-4 mb-8">
+          <li class="flex items-center gap-3 text-ink/90">
+            <Icon name="envelope" class="w-5 h-5 text-accent2" />
+            <a href="mailto:bangarrahul.b@gmail.com" class="hover:text-accent2 transition-colors">bangarrahul.b@gmail.com</a>
+          </li>
+          <li class="flex items-center gap-3 text-ink/90">
+            <Icon name="envelope" class="w-5 h-5 text-accent2" />
+            <a href="mailto:irahull@amazon.com" class="hover:text-accent2 transition-colors">irahull@amazon.com</a>
+          </li>
+          <li class="flex items-center gap-3 text-ink/90">
+            <Icon name="location-dot" class="w-5 h-5 text-accent2" />
+            <a
+              href="https://www.google.com/maps?q=National Institute of Technology Tiruchirappalli"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-accent2 transition-colors"
+            >
+              NIT, Tiruchirappalli
+            </a>
+          </li>
+        </ul>
+
+        <div class="flex items-center gap-4">
+          {socials.map((s) => (
+            <a
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={s.label}
+              class="w-10 h-10 flex items-center justify-center rounded-full border border-line text-muted hover:text-ink hover:border-accent2 transition-colors"
+            >
+              <Icon name={s.icon} class="w-[18px] h-[18px]" />
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div class="reveal rounded-2xl border border-line bg-surface p-8">
+        <form id="contactForm" class="flex flex-col gap-4">
+          <input
+            id="name"
+            name="name"
+            type="text"
+            required
+            placeholder="Your Name"
+            class="w-full px-4 py-3 rounded-xl bg-surface2 border border-line text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+          />
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            placeholder="Your Email"
+            class="w-full px-4 py-3 rounded-xl bg-surface2 border border-line text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+          />
+          <input
+            id="subject"
+            name="subject"
+            type="text"
+            required
+            placeholder="Subject"
+            class="w-full px-4 py-3 rounded-xl bg-surface2 border border-line text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+          />
+          <textarea
+            id="message"
+            name="message"
+            rows="5"
+            required
+            placeholder="Your Message"
+            class="w-full px-4 py-3 rounded-xl bg-surface2 border border-line text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent resize-none"
+          ></textarea>
+          <button type="submit" class="btn btn-primary justify-center">
+            <Icon name="paper-plane" class="w-4 h-4" /> Send Message
+          </button>
+          <p class="text-muted text-xs text-center">
+            This opens your email app with the message ready to send.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Build a mailto: link from the form and open the visitor's email client.
+  // No third-party service, no API keys, nothing to maintain.
+  const TO = 'bangarrahul.b@gmail.com';
+  const form = document.getElementById('contactForm');
+
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = (document.getElementById('name') as HTMLInputElement)?.value.trim() || '';
+      const email = (document.getElementById('email') as HTMLInputElement)?.value.trim() || '';
+      const subject = (document.getElementById('subject') as HTMLInputElement)?.value.trim() || '';
+      const message = (document.getElementById('message') as HTMLTextAreaElement)?.value.trim() || '';
+
+      if (!name || !email || !subject || !message) {
+        alert('Please fill in all fields.');
+        return;
+      }
+
+      const body =
+        `Name: ${name}\n` +
+        `Email: ${email}\n\n` +
+        `${message}`;
+
+      const href =
+        `mailto:${TO}` +
+        `?subject=${encodeURIComponent(subject)}` +
+        `&body=${encodeURIComponent(body)}`;
+
+      window.location.href = href;
+    });
+  }
+</script>

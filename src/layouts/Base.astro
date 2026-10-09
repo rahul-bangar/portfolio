@@ -1,0 +1,94 @@
+---
+import '../styles/global.css';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Rahul Bangar — SDE @ AWS',
+  description = "Rahul Bangar — Software Development Engineer at AWS. Coder, developer, problem solver.",
+} = Astro.props;
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const site = 'https://rahul-bangar.github.io/portfolio/';
+const ogImage = `${base}img/irahull-badge.png`;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{title}</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0a0a16" />
+    <meta name="google-site-verification" content="FhL82JRhySwa6zqSbnBl9DrTkFpDiJDnn9JBV_P1Hz4" />
+    <link rel="canonical" href={site} />
+
+    <!-- Open Graph / social sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={site} />
+    <meta property="og:image" content={new URL(ogImage, site).href} />
+    <meta property="og:site_name" content="Rahul Bangar" />
+
+    <!-- Twitter card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, site).href} />
+
+    <!-- Favicon -->
+    <link href={`${base}img/favicon.png`} rel="icon" />
+    <link href={`${base}img/apple-touch-icon.png`} rel="apple-touch-icon" />
+
+    <!-- Fonts: load early via <link> instead of CSS @import to avoid blocking -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+    />
+  </head>
+  <body>
+    <!-- Preloader -->
+    <div id="preloader" class="preloader" aria-hidden="true">
+      <div class="preloader-mark">
+        <span class="preloader-ring"></span>
+        <span class="preloader-logo font-display">RB<span class="text-accent2">.</span></span>
+      </div>
+    </div>
+
+    <slot />
+
+    <script is:inline>
+      (function () {
+        var pre = document.getElementById('preloader');
+        if (!pre) return;
+        var done = false;
+        function hide() {
+          if (done) return;
+          done = true;
+          pre.classList.add('is-hidden');
+          document.body.classList.remove('is-loading');
+          // Remove from DOM after the fade-out transition completes
+          setTimeout(function () {
+            if (pre && pre.parentNode) pre.parentNode.removeChild(pre);
+          }, 700);
+        }
+        // Lock scroll while loading
+        document.body.classList.add('is-loading');
+        // Hide once everything (fonts, images) has loaded
+        window.addEventListener('load', function () {
+          // Small delay so the entrance feels intentional, not jarring
+          setTimeout(hide, 400);
+        });
+        // Safety net: never let the loader get stuck
+        setTimeout(hide, 4000);
+      })();
+    </script>
+  </body>
+</html>
